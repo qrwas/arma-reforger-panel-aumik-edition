@@ -422,6 +422,32 @@
   @keyframes fadeUp   { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
+  /* Collapsible Card */
+  details.card > summary {
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+  }
+  details.card > summary::-webkit-details-marker {
+    display: none;
+  }
+  details.card[open] > summary {
+    margin-bottom: 16px;
+  }
+  .collapse-icon {
+    font-size: 11px;
+    color: var(--accent);
+    transition: transform 0.2s ease;
+    letter-spacing: 0;
+  }
+  details[open] .collapse-icon {
+    transform: rotate(180deg);
+  }
+
   [hidden] { display:none !important; }
   .feature-row { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:12px 0; }
   .feature-row span { flex:1; }
@@ -571,78 +597,83 @@
     <div class="restart-notice" id="restart-notice">⚠ Changes will take effect after the server restarts</div>
   </div>
 
-  <!-- Mods -->
-  <div class="card" style="animation-delay:0.18s">
-    <div class="card-label">Server Mods</div>
+  <!-- Mods (Collapsible) -->
+  <details class="card" style="animation-delay:0.18s" open>
+    <summary class="card-label">
+      <span>Server Mods</span>
+      <span class="collapse-icon">▼</span>
+    </summary>
 
-    <div id="mods-list" style="margin-bottom:16px;display:flex;flex-direction:column;gap:8px;">
-      <div style="color:var(--muted);font-size:13px">Loading mods...</div>
-    </div>
-
-    <div class="field">
-      <label for="preset-select">Saved mod presets</label>
-      <select id="preset-select" onchange="showPreset()"><option>Loading...</option></select>
-    </div>
-    <p class="feature-note" id="preset-details"></p>
-
-    <div data-permission="mods" hidden>
-      <div class="feature-row">
-        <button class="btn-save" onclick="presetAction('apply')">Apply selected preset</button>
-        <button class="btn-save" onclick="savePreset(true)">Overwrite selected preset</button>
-        <button class="btn-save" onclick="presetAction('delete')">Delete preset</button>
+    <div class="card-content">
+      <div id="mods-list" style="margin-bottom:16px;display:flex;flex-direction:column;gap:8px;">
+        <div style="color:var(--muted);font-size:13px">Loading mods...</div>
       </div>
+
       <div class="field">
-        <label for="preset-name">New preset name</label>
-        <input id="preset-name" maxlength="80" placeholder="e.g. Weekend conflict">
+        <label for="preset-select">Saved mod presets</label>
+        <select id="preset-select" onchange="showPreset()"><option>Loading...</option></select>
       </div>
-      <button class="btn-save" onclick="savePreset()">Save current mods as preset</button>
-      <p class="feature-note">Presets save the configured mod list and versions. Apply replaces that list; restart a running server to use it. The mission is unchanged.</p>
-    </div>
+      <p class="feature-note" id="preset-details"></p>
 
-    <div data-permission="mods" hidden>
-      <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Bulk import</div>
-        <textarea id="mods-import-text" rows="6" maxlength="200000" placeholder='[
+      <div data-permission="mods" hidden>
+        <div class="feature-row">
+          <button class="btn-save" onclick="presetAction('apply')">Apply selected preset</button>
+          <button class="btn-save" onclick="savePreset(true)">Overwrite selected preset</button>
+          <button class="btn-save" onclick="presetAction('delete')">Delete preset</button>
+        </div>
+        <div class="field">
+          <label for="preset-name">New preset name</label>
+          <input id="preset-name" maxlength="80" placeholder="e.g. Weekend conflict">
+        </div>
+        <button class="btn-save" onclick="savePreset()">Save current mods as preset</button>
+        <p class="feature-note">Presets save the configured mod list and versions. Apply replaces that list; restart a running server to use it. The mission is unchanged.</p>
+      </div>
+
+      <div data-permission="mods" hidden>
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Bulk import</div>
+          <textarea id="mods-import-text" rows="6" maxlength="200000" placeholder='[
   { "modId": "595F2BF2F44836FB", "name": "RHS - Status Quo", "version": "0.14.4899" }
 ]' style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Roboto Mono',monospace;font-size:11.5px;padding:10px;line-height:1.5;resize:vertical;outline:none;"></textarea>
-        <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
-          <select id="mods-import-mode" class="field-input" style="min-width:180px;">
-            <option value="replace">Replace full list</option>
-            <option value="merge">Merge with existing</option>
-          </select>
-          <button class="btn-save" type="button" onclick="importModsFromTextarea()" style="margin:0;flex:0 0 auto;">Import pasted JSON</button>
-          <label class="btn-save" style="margin:0;cursor:pointer;flex:0 0 auto;background:transparent;border:1px solid var(--border);color:var(--text);">
-            Upload .json file
-            <input type="file" id="mods-import-file" accept="application/json,.json" onchange="importModsFromFile(this)" style="display:none;" />
-          </label>
+          <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+            <select id="mods-import-mode" class="field-input" style="min-width:180px;">
+              <option value="replace">Replace full list</option>
+              <option value="merge">Merge with existing</option>
+            </select>
+            <button class="btn-save" type="button" onclick="importModsFromTextarea()" style="margin:0;flex:0 0 auto;">Import pasted JSON</button>
+            <label class="btn-save" style="margin:0;cursor:pointer;flex:0 0 auto;background:transparent;border:1px solid var(--border);color:var(--text);">
+              Upload .json file
+              <input type="file" id="mods-import-file" accept="application/json,.json" onchange="importModsFromFile(this)" style="display:none;" />
+            </label>
+          </div>
+          <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5;">
+            Format: a JSON array of <code>{ "modId": "&lt;hex&gt;", "name": "&lt;optional&gt;", "version": "&lt;optional&gt;" }</code>.
+            File limit 2 MB. Replace overwrites the whole mod list; merge adds missing entries only.
+          </div>
         </div>
-        <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5;">
-          Format: a JSON array of <code>{ "modId": "&lt;hex&gt;", "name": "&lt;optional&gt;", "version": "&lt;optional&gt;" }</code>.
-          File limit 2 MB. Replace overwrites the whole mod list; merge adds missing entries only.
-        </div>
-      </div>
 
-      <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Add a single mod</div>
-        <div class="config-grid">
-          <div class="field-group">
-            <label for="mod-id">Mod ID <span style="color:var(--offline)">*</span></label>
-            <input type="text" id="mod-id" placeholder="e.g. 595F2BF2F44836FB" maxlength="64" />
+        <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px;">
+          <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Add a single mod</div>
+          <div class="config-grid">
+            <div class="field-group">
+              <label for="mod-id">Mod ID <span style="color:var(--offline)">*</span></label>
+              <input type="text" id="mod-id" placeholder="e.g. 595F2BF2F44836FB" maxlength="64" />
+            </div>
+            <div class="field-group">
+              <label for="mod-name">Name <span style="color:var(--offline)">*</span></label>
+              <input type="text" id="mod-name" placeholder="e.g. RHS - Status Quo" maxlength="128" />
+            </div>
+            <div class="field-group">
+              <label for="mod-version">Version (optional)</label>
+              <input type="text" id="mod-version" placeholder="e.g. 0.14.4795" maxlength="32" />
+            </div>
           </div>
-          <div class="field-group">
-            <label for="mod-name">Name <span style="color:var(--offline)">*</span></label>
-            <input type="text" id="mod-name" placeholder="e.g. RHS - Status Quo" maxlength="128" />
-          </div>
-          <div class="field-group">
-            <label for="mod-version">Version (optional)</label>
-            <input type="text" id="mod-version" placeholder="e.g. 0.14.4795" maxlength="32" />
-          </div>
+          <button class="btn-save" onclick="addMod()" id="btn-add-mod">Add mod</button>
+          <div class="restart-notice" id="mods-restart-notice">⚠ Mod changes will be applied after server restart</div>
         </div>
-        <button class="btn-save" onclick="addMod()" id="btn-add-mod">Add mod</button>
-        <div class="restart-notice" id="mods-restart-notice">⚠ Mod changes will be applied after server restart</div>
       </div>
     </div>
-  </div>
+  </details>
 
   <!-- Persistence -->
   <div class="card" style="animation-delay:0.2s" data-permission="configure" hidden>
