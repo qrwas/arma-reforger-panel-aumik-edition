@@ -504,16 +504,23 @@
     </div>
   </div>
 
-  <!-- Connected players -->
-  <div class="card clip">
-    <div class="card-label">Players · <span id="player-summary">Loading...</span></div>
-    <div class="field">
-      <label for="player-select">Connected usernames</label>
-      <select id="player-select" onchange="showPlayer()"><option>Loading...</option></select>
+<!-- Connected players (Collapsible) -->
+  <details class="card clip" open>
+    <div class="card-corner"></div>
+    <summary class="card-label">
+      <span>Players · <span id="player-summary">Loading...</span></span>
+      <span class="collapse-icon">▼</span>
+    </summary>
+
+    <div class="card-content" style="margin-top:14px;">
+      <!-- Контейнер для списку гравців -->
+      <div id="players-roster" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="color:var(--muted);font-size:13px;font-style:italic">Loading players...</div>
+      </div>
+      
+      <p class="feature-note" id="player-message" style="margin:8px 0 0;"></p>
     </div>
-    <p class="feature-note" id="player-message"></p>
-    <p class="feature-note" id="player-details"></p>
-  </div>
+  </details>
 
   <!-- Controls -->
   <div class="controls-grid" data-permission="control" hidden>

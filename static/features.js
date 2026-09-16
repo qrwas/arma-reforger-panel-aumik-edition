@@ -56,36 +56,105 @@ function applyPermissions() {
 // ─── PLAYERS ROSTER ───────────────────────────────────────────────────────────
 async function loadPlayers() {
   if (document.hidden) return;
+  const container = byId('players-roster');
+  const summary = byId('player-summary');
+  const msgEl = byId('player-message');
+
   try {
     const res = await apiFetch('/api/players');
     const data = await res.json();
-    const selected = byId('player-select').value;
     roster = data.players || [];
 
-    byId('player-summary').textContent = data.available ? `${roster.length} connected` : 'Player list unavailable';
-    byId('player-message').textContent = data.message || '';
-    byId('player-select').replaceChildren(new Option(roster.length ? 'Select a player' : 'No players to display', ''));
-    
-    roster.forEach(p => byId('player-select').add(new Option(p.name, p.identity)));
-    byId('player-select').value = roster.some(p => p.identity === selected) ? selected : '';
-    showPlayer();
-  } catch (error) {
-    roster = [];
-    byId('player-select').replaceChildren(new Option('Unavailable', ''));
-    byId('player-summary').textContent = 'Player list unavailable';
-    byId('player-message').textContent = error.message;
-    showPlayer();
-  }
-}
+    if (summary) {
+      summary.textContent = data.available ? `${roster.length} connected` : 'Unavailable';
+    }
+    if (msgEl) {
+      msgEl.textContent = data.message || '';
+    }
 
-function showPlayer() {
-  const player = roster.find(p => p.identity === byId('player-select').value);
-  if (!player) {
-    byId('player-details').textContent = '';
-    return;
+    if (!container) return;
+
+    if (!data.available) {
+      container.replaceChildren();
+      const errRow = document.createElement('div');
+      errRow.style.cssText = 'color:var(--offline);font-size:13px;';
+      errRow.textContent = data.message || 'RCON connection unavailable';
+      container.appendChild(errRow);
+      return;
+    }
+
+    if (roster.length === 0) {
+      container.replaceChildren();
+      const emptyRow = document.createElement('div');
+      emptyRow.style.cssText = 'color:var(--muted);font-size:13px;font-style:italic;';
+      emptyRow.textContent = 'No players connected to the server';
+      container.appendChild(emptyRow);
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+
+    roster.forEach(player => {
+      const row = document.createElement('div');
+      row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);';
+
+      // Ліва частина: Номер, Нік, GUID/Identity
+      const info = document.createElement('div');
+      info.style.cssText = 'display:flex;flex-direction:column;gap:3px;min-width:0;';
+
+      const title = document.createElement('div');
+      title.style.cssText = "font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:#fff;letter-spacing:0.04em;display:flex;align-items:center;gap:8px;";
+
+      const numSpan = document.createElement('span');
+      numSpan.style.cssText = 'color:var(--accent);font-size:13px;';
+      numSpan.textContent = `#${player.id}`;
+
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = player.name;
+
+      title.appendChild(numSpan);
+      title.appendChild(nameSpan);
+
+      const sub = document.createElement('div');
+      sub.style.cssText = "font-size:11px;color:var(--muted);font-family:'Roboto Mono',monospace;word-break:break-all;";
+      sub.textContent = player.identity;
+
+      info.appendChild(title);
+      info.appendChild(sub);
+
+      // Права частина: час появи онлайн
+      const right = document.createElement('div');
+      right.style.cssText = 'flex-shrink:0;text-align:right;';
+
+      const timeSpan = document.createElement('div');
+      timeSpan.style.cssText = 'font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);';
+      timeSpan.textContent = 'Online since';
+
+      const timeVal = document.createElement('div');
+      timeVal.style.cssText = "font-family:'Roboto Mono',monospace;font-size:11px;color:var(--online);";
+      timeVal.textContent = player.first_seen ? new Date(player.first_seen * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'now';
+
+      right.appendChild(timeSpan);
+      right.appendChild(timeVal);
+
+      row.appendChild(info);
+      row.appendChild(right);
+      frag.appendChild(row);
+    });
+
+    container.replaceChildren(frag);
+
+  } catch (error) {
+    if (summary) summary.textContent = 'Unavailable';
+    if (msgEl) msgEl.textContent = error.message;
+    if (container) {
+      container.replaceChildren();
+      const errRow = document.createElement('div');
+      errRow.style.cssText = 'color:var(--offline);font-size:13px;';
+      errRow.textContent = error.message;
+      container.appendChild(errRow);
+    }
   }
-  const dateSeen = new Date(player.first_seen * 1000).toLocaleString();
-  byId('player-details').textContent = `Username: ${player.name} · Player ID: ${player.id} · Identity: ${player.identity} · First observed: ${dateSeen}`;
 }
 
 // ─── MOD PRESETS ──────────────────────────────────────────────────────────────
