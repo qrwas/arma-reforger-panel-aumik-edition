@@ -23,60 +23,118 @@ def unpack(data):
 def parse_players(text):
     """Native #players rows: player number ; identity ID ; player name."""
     players = []
-    for line in text.splitlines():
-        line = re.sub(r'^\s*Players on server:\s*', '', line, flags=re.I)
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+
+    for line in lines:
+        # Пропускаємо заголовки та сервісні рядки
+        if re.search(r'^(?:players on server|player id|---|#|\s*$)', line, re.I):
+            continue
+
         match = re.fullmatch(r'\s*(?:Player\s*#?|#)?(\d+)\s*;\s*([^;]+)\s*;\s*(.+?)\s*', line, re.I)
         if match:
             players.append({'id': match[1], 'identity': match[2].strip(), 'name': match[3].strip()})
+
     if not players:
         cleaned = text.strip().lower()
-        if not re.fullmatch(r'players on server:\s*(?:0|\(0\))?\s*', cleaned) and cleaned not in {'no players connected', 'no players on server', '0 players'}:
-            raise ValueError('Player response was not recognized; check RCON permissions and server version')
+        is_empty = (
+            re.search(r'players on server:\s*(?:0|\(0\))?', cleaned) or
+            any(phrase in cleaned for phrase in [
+                'no players', '0 players', '0 connected', '[player#] ; [player uid] ; [player name]'
+            ]) or
+            cleaned == ''
+        )
+        if not is_empty:
+            raise ValueError(f'Player response was not recognized: "{text[:120]}"')
+
     return players
 
 
 def query_players(host, port, password):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
-        sock.settimeout(2)
+        sock.settimeout(2.5)
         sock.connect((host, port))
 
-        def receive(kind, sequence=None):
-            deadline = time.monotonic() + 3
-            chunks, total = {}, None
-            while time.monotonic() < deadline:
-                sock.settimeout(max(.01, deadline - time.monotonic()))
-                payload = unpack(sock.recv(65535))
-                if payload[0] == 2 and len(payload) >= 2:
-                    sock.send(packet(payload[:2]))
-                    continue
-                if payload[0] != kind:
-                    continue
-                if sequence is None:
-                    return payload[1:]
-                if len(payload) < 2 or payload[1] != sequence:
-                    continue
-                content = payload[2:]
-                if content[:1] != b'\x00':
-                    return content
-                if len(content) < 3 or content[1] == 0 or content[2] >= content[1]:
-                    raise ValueError('Invalid multipart RCON response')
-                if total is not None and total != content[1]:
-                    raise ValueError('Inconsistent multipart RCON response')
-                total = content[1]
-                chunks[content[2]] = content[3:]
-                if len(chunks) == total:
-                    return b''.join(chunks[i] for i in range(total))
-            raise TimeoutError('RCON response timed out')
-
+        # 1. Авторизація
         sock.send(packet(b'\x00' + password.encode('utf-8')))
-        if receive(0) != b'\x01':
+        deadline = time.monotonic() + 3.0
+        authed = False
+
+        while time.monotonic() < deadline:
+            try:
+                raw = sock.recv(4096)
+                p = unpack(raw)
+                if p and p[0] == 0:
+                    if p[1:] == b'\x01':
+                        authed = True
+                    break
+            except (socket.timeout, TimeoutError):
+                break
+
+        if not authed:
             raise ValueError('RCON authentication failed')
+
+        # 2. Очищення сокета від вітальних повідомлень (Logged In! Client ID тощо)
+        time.sleep(0.05)
+        sock.settimeout(0.1)
+        while True:
+            try:
+                raw = sock.recv(4096)
+                p = unpack(raw)
+                if p and p[0] == 2 and len(p) >= 2:
+                    sock.send(packet(p[:2]))  # ACK
+            except (socket.timeout, OSError):
+                break
+
+        # 3. Відправка команди #players та очікування відповіді
+        sock.settimeout(3.0)
+        sock.send(packet(b'\x01\x00#players'))
+
+        deadline = time.monotonic() + 4.0
+        response_text = None
+
         try:
-            sock.send(packet(b'\x01\x00#players'))
-            return parse_players(receive(1, 0).decode('utf-8', errors='replace'))
+            while time.monotonic() < deadline:
+                try:
+                    raw = sock.recv(65535)
+                except (socket.timeout, TimeoutError):
+                    break
+
+                p = unpack(raw)
+                if not p:
+                    continue
+
+                # Повідомлення Type=2: надсилаємо ACK обов'язково
+                if p[0] == 2 and len(p) >= 2:
+                    sock.send(packet(p[:2]))
+                    msg = p[2:].decode('utf-8', errors='replace')
+                    
+                    # Ігноруємо проміжне повідомлення 'Processing Command: #players'
+                    if 'Processing Command:' in msg:
+                        continue
+                        
+                    # Якщо прийшов блок зі списком гравців
+                    if 'players on server' in msg.lower():
+                        response_text = msg
+                        break
+
+                # Якщо відповідь прийшла у Type=1 (рідше, але для сумісності)
+                elif p[0] == 1 and len(p) >= 2:
+                    msg = p[2:].decode('utf-8', errors='replace')
+                    if 'players on server' in msg.lower():
+                        response_text = msg
+                        break
+
+            if response_text is None:
+                raise TimeoutError('RCON player response timed out')
+
+            return parse_players(response_text)
+
         finally:
-            # Reforger 1.2.1+: release the connection slot after each query.
-            sock.send(packet(b'\x01\x01@logout'))
+            try:
+                time.sleep(0.05)
+                sock.send(packet(b'\x01\x01@logout'))
+            except OSError:
+                pass
 
 
 class PlayerQuery:
