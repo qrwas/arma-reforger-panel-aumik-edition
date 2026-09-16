@@ -136,7 +136,6 @@
     margin-bottom: 16px;
   }
 
-  /* Status row */
   .status-row {
     display: flex;
     align-items: center;
@@ -192,7 +191,6 @@
     font-size: 17px; letter-spacing: 0.04em; color: #fff;
   }
 
-  /* Controls */
   .controls-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -236,7 +234,6 @@
   .ctrl-btn.reset:hover:not(:disabled) { border-color: var(--warn); color: var(--warn); }
   .ctrl-icon { font-size: 22px; line-height: 1; }
 
-  /* Charts row */
   .charts-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -273,7 +270,6 @@
 
   .chart-wrap { position: relative; height: 80px; }
 
-  /* Config */
   .config-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -296,8 +292,6 @@
   .field-group select:focus { border-color: var(--accent); }
   .field-group select option { background: var(--surface); color: var(--text); }
 
-  /* Standalone input styling — same look as .field-group inputs but
-     used outside of one (e.g. inline in flex rows). */
   .field-input {
     background: var(--bg); border: 1px solid var(--border);
     color: var(--text); font-family: 'Barlow', sans-serif;
@@ -307,9 +301,6 @@
   .field-input:focus { border-color: var(--accent); }
   .field-input option { background: var(--surface); color: var(--text); }
 
-  /* Mission field: the rescan button + count badge sit absolutely in the
-     field-group's top-right corner so they don't push the grid row taller
-     than the matching label on the left. */
   .field-group--mission { position: relative; }
   .field-group--mission .field-aux {
     position: absolute; top: 0; right: 0;
@@ -347,7 +338,6 @@
   }
   .restart-notice.visible { display: block; }
 
-  /* Logs */
   .log-viewer-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -408,7 +398,6 @@
   .log-line.ok   { color: #4caf7d; }
   .log-line.sep  { color: #3a4455; }
 
-  /* Bottom log */
   .op-log {
     background: var(--surface); border: 1px solid var(--border);
     padding: 12px 18px; margin-top: 14px;
@@ -433,17 +422,17 @@
   @keyframes fadeUp   { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
 
-[hidden] { display:none !important; }
-.feature-row { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:12px 0; }
-.feature-row span { flex:1; }
-.feature-note { color:var(--muted); font-size:13px; line-height:1.6; margin:12px 0; overflow-wrap:anywhere; }
-.field { margin:12px 0; }
-.field label { display:block; font-size:12px; margin-bottom:8px; }
-.field input, .field select { width:100%; padding:10px; background:var(--bg); color:var(--text); border:1px solid var(--border); }
-.activity-entry { border-bottom:1px solid var(--border); padding:12px 0; font-size:13px; line-height:1.7; overflow-wrap:anywhere; }
-.activity-entry div { color:var(--muted); }
-button:disabled { opacity:.45; cursor:not-allowed; }
-#activity-list { max-height:440px; overflow:auto; }
+  [hidden] { display:none !important; }
+  .feature-row { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:12px 0; }
+  .feature-row span { flex:1; }
+  .feature-note { color:var(--muted); font-size:13px; line-height:1.6; margin:12px 0; overflow-wrap:anywhere; }
+  .field { margin:12px 0; }
+  .field label { display:block; font-size:12px; margin-bottom:8px; }
+  .field input, .field select { width:100%; padding:10px; background:var(--bg); color:var(--text); border:1px solid var(--border); }
+  .activity-entry { border-bottom:1px solid var(--border); padding:12px 0; font-size:13px; line-height:1.7; overflow-wrap:anywhere; }
+  .activity-entry div { color:var(--muted); }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  #activity-list { max-height:440px; overflow:auto; }
 </style>
 </head>
 <body>
@@ -492,11 +481,14 @@ button:disabled { opacity:.45; cursor:not-allowed; }
   <!-- Connected players -->
   <div class="card clip">
     <div class="card-label">Players · <span id="player-summary">Loading...</span></div>
-    <div class="field"><label for="player-select">Connected usernames</label>
-      <select id="player-select" onchange="showPlayer()"><option>Loading...</option></select></div>
+    <div class="field">
+      <label for="player-select">Connected usernames</label>
+      <select id="player-select" onchange="showPlayer()"><option>Loading...</option></select>
+    </div>
     <p class="feature-note" id="player-message"></p>
     <p class="feature-note" id="player-details"></p>
   </div>
+
   <!-- Controls -->
   <div class="controls-grid" data-permission="control" hidden>
     <button class="ctrl-btn start" id="btn-start" onclick="serverAction('start')" disabled>
@@ -583,67 +575,72 @@ button:disabled { opacity:.45; cursor:not-allowed; }
   <div class="card" style="animation-delay:0.18s">
     <div class="card-label">Server Mods</div>
 
-    <!-- Active mod list -->
     <div id="mods-list" style="margin-bottom:16px;display:flex;flex-direction:column;gap:8px;">
       <div style="color:var(--muted);font-size:13px">Loading mods...</div>
     </div>
 
-    <!-- Mod presets -->
-    <div class="field"><label for="preset-select">Saved mod presets</label>
-      <select id="preset-select" onchange="showPreset()"><option>Loading...</option></select></div>
+    <div class="field">
+      <label for="preset-select">Saved mod presets</label>
+      <select id="preset-select" onchange="showPreset()"><option>Loading...</option></select>
+    </div>
     <p class="feature-note" id="preset-details"></p>
+
     <div data-permission="mods" hidden>
-      <div class="feature-row"><button class="btn-save" onclick="presetAction('apply')">Apply selected preset</button>
+      <div class="feature-row">
+        <button class="btn-save" onclick="presetAction('apply')">Apply selected preset</button>
         <button class="btn-save" onclick="savePreset(true)">Overwrite selected preset</button>
-        <button class="btn-save" onclick="presetAction('delete')">Delete preset</button></div>
-      <div class="field"><label for="preset-name">New preset name</label><input id="preset-name" maxlength="80" placeholder="e.g. Weekend conflict"></div>
+        <button class="btn-save" onclick="presetAction('delete')">Delete preset</button>
+      </div>
+      <div class="field">
+        <label for="preset-name">New preset name</label>
+        <input id="preset-name" maxlength="80" placeholder="e.g. Weekend conflict">
+      </div>
       <button class="btn-save" onclick="savePreset()">Save current mods as preset</button>
       <p class="feature-note">Presets save the configured mod list and versions. Apply replaces that list; restart a running server to use it. The mission is unchanged.</p>
     </div>
-    <div data-permission="mods" hidden>
-    <!-- Bulk import (paste JSON or upload file) -->
-    <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
-      <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Bulk import</div>
-      <textarea id="mods-import-text" rows="6" maxlength="200000" placeholder='[
-  { "modId": "595F2BF2F44836FB", "name": "RHS - Status Quo", "version": "0.14.4899" }
-]' style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:10px;line-height:1.5;resize:vertical;outline:none;"></textarea>
-      <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
-        <select id="mods-import-mode" class="field-input" style="min-width:180px;">
-          <option value="replace">Replace full list</option>
-          <option value="merge">Merge with existing</option>
-        </select>
-        <button class="btn-save" type="button" onclick="importModsFromTextarea()" style="margin:0;flex:0 0 auto;">Import pasted JSON</button>
-        <label class="btn-save" style="margin:0;cursor:pointer;flex:0 0 auto;background:transparent;border:1px solid var(--border);color:var(--text);">
-          Upload .json file
-          <input type="file" id="mods-import-file" accept="application/json,.json" onchange="importModsFromFile(this)" style="display:none;" />
-        </label>
-      </div>
-      <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5;">
-        Format: a JSON array of <code>{ "modId": "&lt;hex&gt;", "name": "&lt;optional&gt;", "version": "&lt;optional&gt;" }</code>.
-        File limit 2 MB. Replace overwrites the whole mod list; merge adds missing entries only.
-      </div>
-    </div>
 
-    <!-- Single-add form -->
-    <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px;">
-      <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Add a single mod</div>
-      <div class="config-grid">
-        <div class="field-group">
-          <label for="mod-id">Mod ID <span style="color:var(--offline)">*</span></label>
-          <input type="text" id="mod-id" placeholder="e.g. 595F2BF2F44836FB" maxlength="64" />
+    <div data-permission="mods" hidden>
+      <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Bulk import</div>
+        <textarea id="mods-import-text" rows="6" maxlength="200000" placeholder='[
+  { "modId": "595F2BF2F44836FB", "name": "RHS - Status Quo", "version": "0.14.4899" }
+]' style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Roboto Mono',monospace;font-size:11.5px;padding:10px;line-height:1.5;resize:vertical;outline:none;"></textarea>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap;">
+          <select id="mods-import-mode" class="field-input" style="min-width:180px;">
+            <option value="replace">Replace full list</option>
+            <option value="merge">Merge with existing</option>
+          </select>
+          <button class="btn-save" type="button" onclick="importModsFromTextarea()" style="margin:0;flex:0 0 auto;">Import pasted JSON</button>
+          <label class="btn-save" style="margin:0;cursor:pointer;flex:0 0 auto;background:transparent;border:1px solid var(--border);color:var(--text);">
+            Upload .json file
+            <input type="file" id="mods-import-file" accept="application/json,.json" onchange="importModsFromFile(this)" style="display:none;" />
+          </label>
         </div>
-        <div class="field-group">
-          <label for="mod-name">Name <span style="color:var(--offline)">*</span></label>
-          <input type="text" id="mod-name" placeholder="e.g. RHS - Status Quo" maxlength="128" />
-        </div>
-        <div class="field-group">
-          <label for="mod-version">Version (optional)</label>
-          <input type="text" id="mod-version" placeholder="e.g. 0.14.4795" maxlength="32" />
+        <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5;">
+          Format: a JSON array of <code>{ "modId": "&lt;hex&gt;", "name": "&lt;optional&gt;", "version": "&lt;optional&gt;" }</code>.
+          File limit 2 MB. Replace overwrites the whole mod list; merge adds missing entries only.
         </div>
       </div>
-      <button class="btn-save" onclick="addMod()" id="btn-add-mod">Add mod</button>
-      <div class="restart-notice" id="mods-restart-notice">⚠ Mod changes will be applied after server restart</div>
-    </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:16px;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;">Add a single mod</div>
+        <div class="config-grid">
+          <div class="field-group">
+            <label for="mod-id">Mod ID <span style="color:var(--offline)">*</span></label>
+            <input type="text" id="mod-id" placeholder="e.g. 595F2BF2F44836FB" maxlength="64" />
+          </div>
+          <div class="field-group">
+            <label for="mod-name">Name <span style="color:var(--offline)">*</span></label>
+            <input type="text" id="mod-name" placeholder="e.g. RHS - Status Quo" maxlength="128" />
+          </div>
+          <div class="field-group">
+            <label for="mod-version">Version (optional)</label>
+            <input type="text" id="mod-version" placeholder="e.g. 0.14.4795" maxlength="32" />
+          </div>
+        </div>
+        <button class="btn-save" onclick="addMod()" id="btn-add-mod">Add mod</button>
+        <div class="restart-notice" id="mods-restart-notice">⚠ Mod changes will be applied after server restart</div>
+      </div>
     </div>
   </div>
 
@@ -690,24 +687,50 @@ button:disabled { opacity:.45; cursor:not-allowed; }
   <div class="card clip">
     <div class="card-label">My account · <span id="account-label"></span></div>
     <div class="config-grid">
-      <div class="field"><label for="current-password">Current password</label><input id="current-password" type="password" autocomplete="current-password"></div>
-      <div class="field"><label for="new-password">New password (10+ characters)</label><input id="new-password" type="password" autocomplete="new-password"></div>
+      <div class="field">
+        <label for="current-password">Current password</label>
+        <input id="current-password" type="password" autocomplete="current-password">
+      </div>
+      <div class="field">
+        <label for="new-password">New password (10+ characters)</label>
+        <input id="new-password" type="password" autocomplete="new-password">
+      </div>
     </div>
     <button class="btn-save" onclick="changePassword()">Change my password</button>
   </div>
+
   <div class="card clip" data-permission="users" hidden>
     <div class="card-label">User accounts</div>
     <p class="feature-note">Viewer: status and players. Operator: also server controls and logs. Manager: also configuration, mods, presets and activity. Administrator: all features and account management.</p>
     <div id="users-list"></div>
+    <div id="user-form-status" style="margin-top:12px;font-size:12px;color:var(--accent);font-weight:600;"></div>
     <input id="user-id" type="hidden">
     <div class="config-grid">
-      <div class="field"><label for="user-name">Username</label><input id="user-name" maxlength="32" autocomplete="off"></div>
-      <div class="field"><label for="user-password">Password (leave blank to keep when editing)</label><input id="user-password" type="password" autocomplete="new-password"></div>
-      <div class="field"><label for="user-role">Permission level</label><select id="user-role"><option value="viewer">Viewer</option><option value="operator">Operator</option><option value="manager">Manager</option><option value="admin">Administrator</option></select></div>
+      <div class="field">
+        <label for="user-name">Username</label>
+        <input id="user-name" maxlength="32" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="user-password">Password (leave blank to keep when editing)</label>
+        <input id="user-password" type="password" autocomplete="new-password">
+      </div>
+      <div class="field">
+        <label for="user-role">Permission level</label>
+        <select id="user-role">
+          <option value="viewer">Viewer</option>
+          <option value="operator">Operator</option>
+          <option value="manager">Manager</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
     </div>
     <label><input id="user-enabled" type="checkbox" checked> Account enabled</label>
-    <div class="feature-row"><button id="user-save" class="btn-save" onclick="saveUser()">Create account</button><button class="btn-save" onclick="resetUserForm()">Clear form</button></div>
+    <div class="feature-row">
+      <button id="user-save" class="btn-save" onclick="saveUser()">Create account</button>
+      <button class="btn-save" onclick="resetUserForm()">Clear form</button>
+    </div>
   </div>
+
   <details class="card" data-permission="activity" hidden>
     <summary class="card-label" style="cursor:pointer;margin-bottom:12px">Admin activity history — who changed what</summary>
     <p class="feature-note">Separate from the live server console: account actions such as server start/stop/restart, mod changes, presets and settings, with who performed them and when.</p>
@@ -715,6 +738,7 @@ button:disabled { opacity:.45; cursor:not-allowed; }
     <div id="activity-list"></div>
     <button id="activity-more" class="btn-save" onclick="loadActivity(true)" hidden>Load older events</button>
   </details>
+
   <!-- Op log -->
   <div class="op-log">
     <div class="log-label">Last operation</div>
@@ -728,45 +752,66 @@ button:disabled { opacity:.45; cursor:not-allowed; }
 </div>
 
 <script>
-// ─── CSRF + fetch helpers ────────────────────────────────────────────────────
+// ─── UNIFIED API CLIENT ───────────────────────────────────────────────────────
 let CSRF = '';
 
-async function postJson(url, body) {
-  if (!CSRF) {
-    try { const r = await fetch('/api/csrf'); if (r.ok) CSRF = (await r.json()).csrf || ''; }
-    catch(e) {}
+async function fetchCsrf() {
+  try {
+    const r = await fetch('/api/csrf');
+    if (r.ok) {
+      const d = await r.json();
+      CSRF = d.csrf || '';
+    }
+  } catch(e) {}
+  return CSRF;
+}
+
+async function apiFetch(url, opts = {}) {
+  const r = await fetch(url, opts);
+  if (r.status === 401) {
+    window.location.href = '/login';
+    throw new Error('Unauthorized');
   }
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF },
-    body: JSON.stringify({ ...(body || {}), _csrf: CSRF }),
-  });
-  if (r.status === 401) { window.location.href = '/login'; throw new Error('unauthorized'); }
+  return r;
+}
+
+async function apiPost(url, body = {}, isFormData = false) {
+  if (!CSRF) await fetchCsrf();
+
+  let headers = { 'X-CSRF-Token': CSRF };
+  let payload;
+
+  if (isFormData) {
+    body.append('_csrf', CSRF);
+    payload = body;
+  } else {
+    headers['Content-Type'] = 'application/json';
+    payload = JSON.stringify({ ...body, _csrf: CSRF });
+  }
+
+  let r = await apiFetch(url, { method: 'POST', headers, body: payload });
+
   if (r.status === 403) {
-    // CSRF expired — refresh token and surface error
-    try { const cr = await fetch('/api/csrf'); if (cr.ok) CSRF = (await cr.json()).csrf || ''; } catch(e) {}
+    // Retry once with a fresh CSRF token
+    await fetchCsrf();
+    headers['X-CSRF-Token'] = CSRF;
+    if (isFormData) {
+      body.set('_csrf', CSRF);
+      payload = body;
+    } else {
+      payload = JSON.stringify({ ...body, _csrf: CSRF });
+    }
+    r = await apiFetch(url, { method: 'POST', headers, body: payload });
   }
-  document.dispatchEvent(new CustomEvent('panel-change', {detail: url}));
+
+  document.dispatchEvent(new CustomEvent('panel-change', { detail: url }));
   return r;
 }
 
-async function postForm(url, formData) {
-  if (!CSRF) {
-    try { const r = await fetch('/api/csrf'); if (r.ok) CSRF = (await r.json()).csrf || ''; }
-    catch(e) {}
-  }
-  formData.append('_csrf', CSRF);
-  const r = await fetch(url, {
-    method: 'POST',
-    headers: { 'X-CSRF-Token': CSRF },
-    body: formData,
-  });
-  if (r.status === 401) { window.location.href = '/login'; throw new Error('unauthorized'); }
-  document.dispatchEvent(new CustomEvent('panel-change', {detail: url}));
-  return r;
-}
+const postJson = (url, data) => apiPost(url, data, false);
+const postForm = (url, data) => apiPost(url, data, true);
 
-// ─── Charts setup ────────────────────────────────────────────────────────────
+// ─── CHARTS SETUP ─────────────────────────────────────────────────────────────
 const MAX_POINTS = 60;
 
 function makeChartData(color) {
@@ -817,20 +862,20 @@ const ramChart = new Chart(document.getElementById('chart-ram'), {
 
 function pushChart(chart, value) {
   chart.data.datasets[0].data.push(value);
-  if (chart.data.datasets[0].data.length > MAX_POINTS)
+  if (chart.data.datasets[0].data.length > MAX_POINTS) {
     chart.data.datasets[0].data.shift();
+  }
   chart.update('none');
 }
 
-// ─── Metrics polling ─────────────────────────────────────────────────────────
+// ─── METRICS POLLING ──────────────────────────────────────────────────────────
 async function fetchMetrics() {
+  if (document.hidden) return;
   try {
-    const r = await fetch('/api/metrics');
-    if (r.status === 401) { window.location.href = '/login'; return; }
+    const r = await apiFetch('/api/metrics');
     const d = await r.json();
 
     const ramPct = d.ram_total > 0 ? Math.round(d.ram_used / d.ram_total * 100) : 0;
-
     document.getElementById('cpu-val').textContent = (d.cpu ?? 0).toFixed(1) + '%';
     document.getElementById('ram-val').textContent = ramPct + '%';
     document.getElementById('proc-cpu-sub').textContent = 'Arma: ' + (d.running ? (d.cpu ?? 0).toFixed(1) + '%' : '—%');
@@ -841,94 +886,100 @@ async function fetchMetrics() {
   } catch(e) {}
 }
 
-setInterval(fetchMetrics, 3000);
-fetchMetrics();
+let metricsTimer = setInterval(fetchMetrics, 3000);
 
-// ─── SSE Log stream ───────────────────────────────────────────────────────────
-let evtSource = null;
+// ─── LOGS STREAM ──────────────────────────────────────────────────────────────
+let logTimer = null;
+let lastLogLine = '';
+const MAX_LOG_LINES = 500;
 
 function colorLine(line) {
   const l = line.toLowerCase();
-  if (l.includes('(e):') || l.includes('error'))  return 'err';
+  if (l.includes('(e):') || l.includes('error')) return 'err';
   if (l.includes('(w):') || l.includes('warning')) return 'warn';
   if (l.includes('online game') || l.includes('server registered')) return 'ok';
-  if (line.startsWith('[---'))  return 'sep';
+  if (line.startsWith('[---')) return 'sep';
   return '';
 }
 
-function appendLog(text) {
-  const el = document.getElementById('log-output');
-  const span = document.createElement('span');
-  span.className = 'log-line ' + colorLine(text);
-  span.textContent = text;
-  el.appendChild(span);
-  el.appendChild(document.createTextNode('\n'));
-  // Auto-scroll only when the user is near the bottom
-  if (el.scrollHeight - el.scrollTop < el.clientHeight + 120) {
-    el.scrollTop = el.scrollHeight;
-  }
-  // Limit lines in the DOM
-  const lines = el.querySelectorAll('.log-line');
-  if (lines.length > 800) lines[0].remove();
-}
-
 function clearLog() {
-  document.getElementById('log-output').innerHTML = '';
+  document.getElementById('log-output').replaceChildren();
+  lastLogLine = '';
 }
-
-function startLogStream() {
-  if (evtSource) evtSource.close();
-
-  // Fetch the last 80 lines immediately
-  fetchLogs(80);
-
-  // Then poll every 2 seconds for new lines
-  evtSource = setInterval(() => fetchLogs(30), 2000);
-  document.getElementById('log-live-dot').classList.remove('off');
-}
-
-let lastLogLine = '';
 
 async function fetchLogs(count) {
-  if (typeof can === 'function' && !can('logs')) return;
+  if (document.hidden || (typeof can === 'function' && !can('logs'))) return;
   try {
-    const r = await fetch(`/api/logs?lines=${count}`);
-    if (!r.ok) return;
+    const r = await apiFetch(`/api/logs?lines=${count}`);
     const d = await r.json();
     if (!d.lines || d.lines.length === 0) return;
 
     const el = document.getElementById('log-output');
     const lastNew = d.lines[d.lines.length - 1];
 
-    // On first load, clear and insert all lines
     if (lastLogLine === '') {
-      el.innerHTML = '';
-      d.lines.forEach(line => appendLog(line));
+      el.replaceChildren();
+      const frag = document.createDocumentFragment();
+      d.lines.forEach(line => {
+        const s = document.createElement('span');
+        s.className = 'log-line ' + colorLine(line);
+        s.textContent = line;
+        frag.appendChild(s);
+      });
+      el.appendChild(frag);
       lastLogLine = lastNew;
+      el.scrollTop = el.scrollHeight;
       return;
     }
 
-    // On subsequent polls, append only new lines
     if (lastNew === lastLogLine) return;
 
     const idx = d.lines.lastIndexOf(lastLogLine);
     const newLines = idx >= 0 ? d.lines.slice(idx + 1) : d.lines;
-    newLines.forEach(line => appendLog(line));
+    const shouldScroll = (el.scrollHeight - el.scrollTop) < (el.clientHeight + 120);
+
+    const frag = document.createDocumentFragment();
+    newLines.forEach(line => {
+      const s = document.createElement('span');
+      s.className = 'log-line ' + colorLine(line);
+      s.textContent = line;
+      frag.appendChild(s);
+    });
+    el.appendChild(frag);
     lastLogLine = lastNew;
+
+    while (el.childElementCount > MAX_LOG_LINES) {
+      el.firstElementChild.remove();
+    }
+
+    if (shouldScroll) {
+      el.scrollTop = el.scrollHeight;
+    }
   } catch(e) {}
 }
 
-startLogStream();
+function startLogStream() {
+  if (logTimer) clearInterval(logTimer);
+  fetchLogs(80);
+  logTimer = setInterval(() => fetchLogs(30), 2000);
+  document.getElementById('log-live-dot').classList.remove('off');
+}
 
-// ─── Status polling ───────────────────────────────────────────────────────────
+// ─── STATUS POLLING & FORM DIRTY DETECTION ────────────────────────────────────
 let refreshInterval = null;
 let countdown = 10;
 let busy = false;
+let configDirty = false;
+
+['input-name', 'input-password', 'input-password-admin'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => { configDirty = true; });
+});
+document.getElementById('input-mission').addEventListener('change', () => { configDirty = true; });
 
 async function fetchStatus() {
+  if (document.hidden) return;
   try {
-    const r = await fetch('/api/status');
-    if (r.status === 401) { window.location.href = '/login'; return; }
+    const r = await apiFetch('/api/status');
     const d = await r.json();
     updateUI(d);
   } catch(e) {
@@ -944,49 +995,45 @@ function updateUI(d) {
   txt.textContent = d.running ? 'ONLINE' : 'OFFLINE';
 
   document.getElementById('server-name-display').textContent = d.server_name || '—';
-  document.getElementById('ip-port-display').textContent = (d.ip && d.port) ? d.ip + ':' + d.port : '—';
+  document.getElementById('ip-port-display').textContent = (d.ip && d.port) ? `${d.ip}:${d.port}` : '—';
   document.getElementById('map-name').textContent = d.map || '—';
   document.getElementById('uptime-display').textContent = d.running ? (d.uptime || '—') : '—';
 
   if (!busy) {
     document.getElementById('btn-start').disabled = d.running;
-    document.getElementById('btn-stop').disabled  = !d.running;
+    document.getElementById('btn-stop').disabled = !d.running;
     document.getElementById('btn-reset').disabled = false;
   }
 
-  const nameInput = document.getElementById('input-name');
-  if (document.activeElement !== nameInput) nameInput.value = d.server_name || '';
-
-  const pwdInput = document.getElementById('input-password');
-  if (document.activeElement !== pwdInput) pwdInput.value = d.password || '';
-
-  const pwdAdminInput = document.getElementById('input-password-admin');
-  if (document.activeElement !== pwdAdminInput) pwdAdminInput.value = d.password_admin || '';
+  if (!configDirty) {
+    document.getElementById('input-name').value = d.server_name || '';
+    document.getElementById('input-password').value = d.password || '';
+    document.getElementById('input-password-admin').value = d.password_admin || '';
+  }
 
   if (d.csrf) CSRF = d.csrf;
   renderMissionSelect(d.missions || [], d.missions_count, d.scenario_id);
-
-  // Render the mod list
   renderMods(d.mods || []);
   if (typeof applyPermissions === 'function') applyPermissions();
 }
 
 function renderMissionSelect(missions, counts, currentId) {
   const sel = document.getElementById('input-mission');
-  // Always rebuild — discovered scenarios can change as the workshop populates.
-  const prev = sel.value || currentId || '';
-  sel.innerHTML = '';
-  // Group by source: vanilla first, then per-mod alphabetical.
+  const prev = configDirty ? sel.value : (sel.value || currentId || '');
+  sel.replaceChildren();
+
   const groups = {};
   missions.forEach(m => {
     const key = m.source || 'vanilla';
     (groups[key] = groups[key] || []).push(m);
   });
+
   const sourceKeys = Object.keys(groups).sort((a, b) => {
     if (a === 'vanilla') return -1;
     if (b === 'vanilla') return 1;
     return a.localeCompare(b);
   });
+
   sourceKeys.forEach(src => {
     const og = document.createElement('optgroup');
     og.label = src === 'vanilla' ? 'Base game' : src;
@@ -998,9 +1045,9 @@ function renderMissionSelect(missions, counts, currentId) {
     });
     sel.appendChild(og);
   });
+
   if (prev) sel.value = prev;
 
-  // Update the badge near the select if present.
   const badge = document.getElementById('scenario-source-badge');
   if (badge && counts) {
     badge.textContent = `${counts.vanilla} vanilla · ${counts.from_mods} from mods`;
@@ -1020,18 +1067,15 @@ async function rescanScenarios() {
       let msg = `Vanilla: ${d.missions_count.vanilla} · From mods: ${d.missions_count.from_mods}`;
       if (diag.workshop_dir) {
         const n = diag.metas_found ?? diag.paks_found ?? 0;
-        msg += ` (scanned ${n} addon${n === 1 ? '' : 's'} in ${diag.workshop_dir})`;
-      } else {
-        const tried = (diag.candidates_tried || []).map(c => c.path).slice(0, 3).join(', ');
-        msg += `. No .pak files found. Tried: ${tried}${(diag.candidates_tried || []).length > 3 ? '…' : ''}. Run the server once so it downloads workshop mods, or set WORKSHOP_DIR in config.env.`;
+        msg += ` (scanned ${n} addon${n === 1 ? '' : 's'})`;
       }
       setLog(msg, diag.workshop_dir ? 'ok' : 'error');
-      // Stash full diagnostics in console for deep debugging.
-      if (diag) console.log('[rescan diagnostics]', diag);
     } else {
       setLog('Rescan failed: ' + (d.error || 'unknown'), 'error');
     }
-  } catch(e) { setLog('Rescan error', 'error'); }
+  } catch(e) {
+    setLog('Rescan error', 'error');
+  }
   if (btn) btn.disabled = false;
 }
 
@@ -1041,43 +1085,62 @@ function renderMods(mods) {
     container.innerHTML = '<div style="color:var(--muted);font-size:13px;font-style:italic">No mods configured</div>';
     return;
   }
-  container.innerHTML = '';
+  container.replaceChildren();
+  const frag = document.createDocumentFragment();
+
   mods.forEach(mod => {
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:var(--bg);border:1px solid var(--border)';
-    row.innerHTML = `
-      <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
-        <div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:15px;color:#fff;letter-spacing:0.04em">${escHtml(mod.name)}</div>
-        <div style="display:flex;gap:12px;align-items:center">
-          <span style="font-size:11px;color:var(--muted);font-family:\'JetBrains Mono\',monospace">${escHtml(mod.modId)}</span>
-          ${mod.version ? `<span style="font-size:11px;color:var(--accent);letter-spacing:0.05em">v${escHtml(mod.version)}</span>` : ''}
-        </div>
-      </div>
-      <button onclick="removeMod('${escHtml(mod.modId)}')" style="
-        background:transparent;border:1px solid var(--border);color:var(--muted);
-        font-family:\'Barlow Condensed\',sans-serif;font-size:11px;letter-spacing:0.15em;
-        text-transform:uppercase;padding:5px 12px;cursor:pointer;flex-shrink:0;
-        transition:all 0.2s;white-space:nowrap
-      " onmouseover="this.style.borderColor='var(--offline)';this.style.color='var(--offline)'"
-         onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
-        Remove ✕
-      </button>`;
-    container.appendChild(row);
-  });
-}
+    
+    const info = document.createElement('div');
+    info.style.cssText = 'display:flex;flex-direction:column;gap:3px;min-width:0';
 
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const name = document.createElement('div');
+    name.style.cssText = "font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:#fff;letter-spacing:0.04em";
+    name.textContent = mod.name;
+
+    const sub = document.createElement('div');
+    sub.style.cssText = 'display:flex;gap:12px;align-items:center';
+
+    const idSpan = document.createElement('span');
+    idSpan.style.cssText = "font-size:11px;color:var(--muted);font-family:'Roboto Mono',monospace";
+    idSpan.textContent = mod.modId;
+    sub.appendChild(idSpan);
+
+    if (mod.version) {
+      const verSpan = document.createElement('span');
+      verSpan.style.cssText = 'font-size:11px;color:var(--accent);letter-spacing:0.05em';
+      verSpan.textContent = 'v' + mod.version;
+      sub.appendChild(verSpan);
+    }
+
+    info.appendChild(name);
+    info.appendChild(sub);
+
+    const btn = document.createElement('button');
+    btn.style.cssText = "background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;padding:5px 12px;cursor:pointer;flex-shrink:0;transition:all 0.2s;white-space:nowrap";
+    btn.textContent = 'Remove ✕';
+    btn.onmouseover = () => { btn.style.borderColor = 'var(--offline)'; btn.style.color = 'var(--offline)'; };
+    btn.onmouseout = () => { btn.style.borderColor = 'var(--border)'; btn.style.color = 'var(--muted)'; };
+    btn.onclick = () => removeMod(mod.modId);
+
+    row.appendChild(info);
+    row.appendChild(btn);
+    frag.appendChild(row);
+  });
+  container.appendChild(frag);
 }
 
 async function addMod() {
-  const modId   = document.getElementById('mod-id').value.trim();
+  const modId = document.getElementById('mod-id').value.trim();
   const modName = document.getElementById('mod-name').value.trim();
-  const modVer  = document.getElementById('mod-version').value.trim();
-  if (!modId)   { setLog('Mod ID is required', 'error'); return; }
-  if (!modName) { setLog('Mod name is required', 'error'); return; }
-  document.getElementById('btn-add-mod').disabled = true;
+  const modVer = document.getElementById('mod-version').value.trim();
+  if (!modId || !modName) { setLog('Mod ID and Name are required', 'error'); return; }
+
+  const btn = document.getElementById('btn-add-mod');
+  btn.disabled = true;
   setLog('Adding mod…', 'info');
+
   try {
     const r = await postJson('/api/mods/add', { modId, name: modName, version: modVer });
     const d = await r.json();
@@ -1092,11 +1155,11 @@ async function addMod() {
       setLog('Error: ' + (d.error || 'unknown'), 'error');
     }
   } catch(e) { setLog('Connection error', 'error'); }
-  document.getElementById('btn-add-mod').disabled = false;
+  btn.disabled = false;
 }
 
 async function removeMod(modId) {
-  if (!confirm('Remove this mod from the configuration?')) return;
+  if (!confirm('Remove this mod from configuration?')) return;
   setLog('Removing mod…', 'info');
   try {
     const r = await postJson('/api/mods/remove', { modId });
@@ -1111,7 +1174,6 @@ async function removeMod(modId) {
   } catch(e) { setLog('Connection error', 'error'); }
 }
 
-// ─── Bulk import (paste or file upload) ──────────────────────────────────────
 async function importModsFromTextarea() {
   const txt = document.getElementById('mods-import-text').value;
   if (!txt.trim()) { setLog('Paste a JSON array first', 'error'); return; }
@@ -1147,11 +1209,7 @@ async function _importMods(body) {
 
 function _afterImport(d) {
   if (d.ok) {
-    let msg = d.message || `${d.imported} mods imported`;
-    if (d.skipped && d.skipped.length) {
-      msg += ` (${d.skipped.length} skipped: ${d.skipped.slice(0, 3).join('; ')}${d.skipped.length > 3 ? '…' : ''})`;
-    }
-    setLog(msg, 'ok');
+    setLog(d.message || `${d.imported} mods imported`, 'ok');
     document.getElementById('mods-import-text').value = '';
     document.getElementById('mods-restart-notice').classList.toggle('visible', d.restart_required);
     fetchStatus();
@@ -1163,8 +1221,8 @@ function _afterImport(d) {
 function setLog(msg, type = 'info') {
   const el = document.getElementById('log-msg');
   el.className = 'log-entry ' + type;
-  const ts = new Date().toLocaleTimeString('en-US');
-  el.textContent = '[' + ts + '] ' + msg;
+  const ts = new Date().toLocaleTimeString();
+  el.textContent = `[${ts}] ${msg}`;
 }
 
 function setBusy(state) {
@@ -1177,16 +1235,13 @@ function setBusy(state) {
 }
 
 async function serverAction(action) {
-  const labels = { start: 'Starting server...', stop: 'Stopping server...', restart: 'Restarting server...' };
   setBusy(true);
-  setLog(labels[action], 'info');
+  setLog(`Executing ${action}...`, 'info');
   try {
     const r = await postJson('/api/' + action, {});
-    if (r.status === 401) { window.location.href = '/login'; return; }
     const d = await r.json();
     if (d.ok) {
-      const success = { start: 'Server started', stop: 'Server stopped', restart: 'Server restarted' };
-      setLog(success[action], 'ok');
+      setLog(`Server ${action} successful`, 'ok');
       await new Promise(res => setTimeout(res, 1500));
       await fetchStatus();
     } else {
@@ -1197,13 +1252,15 @@ async function serverAction(action) {
 }
 
 async function saveConfig() {
-  const name     = document.getElementById('input-name').value.trim();
+  const name = document.getElementById('input-name').value.trim();
   const scenario = document.getElementById('input-mission').value;
   const password = document.getElementById('input-password').value;
   const pwdAdmin = document.getElementById('input-password-admin').value.trim();
 
-  if (!name)     { setLog('Server name cannot be empty', 'error'); return; }
-  if (!pwdAdmin) { setLog('Admin password cannot be empty', 'error'); return; }
+  if (!name || !pwdAdmin) {
+    setLog('Server name and Admin password are required', 'error');
+    return;
+  }
 
   setBusy(true);
   setLog('Saving configuration...', 'info');
@@ -1212,6 +1269,7 @@ async function saveConfig() {
     const d = await r.json();
     if (d.ok) {
       setLog('Configuration saved', 'ok');
+      configDirty = false;
       document.getElementById('restart-notice').classList.toggle('visible', !!d.restart_required);
       await fetchStatus();
     } else {
@@ -1231,7 +1289,7 @@ function _fmtBytes(n) {
 function _fmtAge(ts) {
   if (!ts) return 'never';
   const s = Math.max(0, Math.floor(Date.now() / 1000 - ts));
-  if (s < 60)   return `${s}s ago`;
+  if (s < 60) return `${s}s ago`;
   if (s < 3600) return `${Math.floor(s / 60)}m ago`;
   if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
   return `${Math.floor(s / 86400)}d ago`;
@@ -1239,37 +1297,41 @@ function _fmtAge(ts) {
 
 function _renderPersistStats(s) {
   const el = document.getElementById('persist-stats');
-  if (!s.saves) { el.textContent = ''; return; }
+  if (!s.saves) { el.replaceChildren(); return; }
   const { path, exists, total, buckets } = s.saves;
   if (!exists || !total || total.count === 0) {
-    el.innerHTML = `No saves yet under <code>${escHtml(path || '')}</code>.`;
+    el.textContent = `No saves yet under ${path || ''}`;
     return;
   }
   const bucketLabel = { game: 'World session', playersave: 'Player saves', settings: 'Settings' };
-  const rows = ['game', 'playersave', 'settings']
+  const parts = ['game', 'playersave', 'settings']
     .filter(k => buckets && buckets[k] && buckets[k].count > 0)
-    .map(k => `${bucketLabel[k]}: ${buckets[k].count} file${buckets[k].count === 1 ? '' : 's'}, ${_fmtBytes(buckets[k].bytes)} (newest ${_fmtAge(buckets[k].newest)})`)
-    .join(' · ');
-  el.innerHTML = `<code>${escHtml(path)}</code><br>${rows || 'empty'}`;
+    .map(k => `${bucketLabel[k]}: ${buckets[k].count} files, ${_fmtBytes(buckets[k].bytes)} (newest ${_fmtAge(buckets[k].newest)})`);
+
+  el.replaceChildren();
+  const code = document.createElement('code');
+  code.textContent = path;
+  el.appendChild(code);
+  el.appendChild(document.createElement('br'));
+  el.appendChild(document.createTextNode(parts.join(' · ') || 'empty'));
 }
 
 async function fetchPersistence() {
   if (typeof can === 'function' && !can('configure')) return;
   try {
-    const r = await fetch('/api/persistence');
-    if (!r.ok) return;
+    const r = await apiFetch('/api/persistence');
     const d = await r.json();
-    document.getElementById('input-persist-enabled').value  = d.enabled ? 'true' : 'false';
+    document.getElementById('input-persist-enabled').value = d.enabled ? 'true' : 'false';
     document.getElementById('input-persist-interval').value = d.autoSaveInterval;
-    document.getElementById('input-persist-hive').value     = d.hiveId;
+    document.getElementById('input-persist-hive').value = d.hiveId;
     _renderPersistStats(d);
-  } catch (e) { /* panel is the source of truth; silent on transient errors */ }
+  } catch (e) {}
 }
 
 async function savePersistence() {
-  const enabled  = document.getElementById('input-persist-enabled').value === 'true';
+  const enabled = document.getElementById('input-persist-enabled').value === 'true';
   const interval = parseInt(document.getElementById('input-persist-interval').value, 10);
-  const hive     = parseInt(document.getElementById('input-persist-hive').value, 10);
+  const hive = parseInt(document.getElementById('input-persist-hive').value, 10);
   setBusy(true);
   setLog('Saving persistence settings...', 'info');
   try {
@@ -1287,14 +1349,14 @@ async function savePersistence() {
 }
 
 async function flushPersistence() {
-  if (!confirm('Delete the world-session save (.save/game) and per-player saves (.save/playersave)? Server settings are kept. The next launch starts a fresh world. This cannot be undone.')) return;
+  if (!confirm('Delete world session & player saves? This cannot be undone.')) return;
   setBusy(true);
   setLog('Flushing saves...', 'info');
   try {
     const r = await postJson('/api/persistence/flush', {});
     const d = await r.json();
     if (d.ok) {
-      setLog(`Removed ${d.removed} save file${d.removed === 1 ? '' : 's'}`, 'ok');
+      setLog(`Removed ${d.removed} save files`, 'ok');
       _renderPersistStats(d);
     } else {
       setLog('Flush failed: ' + (d.error || 'unknown'), 'error');
@@ -1304,7 +1366,7 @@ async function flushPersistence() {
 }
 
 async function doLogout() {
-  await postJson('/logout', {});
+  try { await postJson('/logout', {}); } catch(e) {}
   window.location.href = '/login';
 }
 
@@ -1313,19 +1375,35 @@ function startCountdown() {
   document.getElementById('refresh-timer').textContent = countdown;
   clearInterval(refreshInterval);
   refreshInterval = setInterval(() => {
+    if (document.hidden) return;
     countdown--;
     document.getElementById('refresh-timer').textContent = countdown;
-    if (countdown <= 0) { fetchStatus(); countdown = 10; }
+    if (countdown <= 0) {
+      fetchStatus();
+      countdown = 10;
+    }
   }, 1000);
 }
 
-fetchStatus().then(() => { fetchPersistence(); startCountdown(); });
+// ─── VISIBILITY CHANGE ────────────────────────────────────────────────────────
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    fetchMetrics();
+    fetchStatus();
+    if (typeof loadPlayers === 'function') loadPlayers();
+  }
+});
 
-// PWA — service worker registration
+// Initialization
+fetchStatus().then(() => {
+  fetchPersistence();
+  startCountdown();
+  startLogStream();
+});
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .catch(err => console.log('SW error:', err));
+    navigator.serviceWorker.register('/service-worker.js').catch(err => console.log('SW error:', err));
   });
 }
 </script>
